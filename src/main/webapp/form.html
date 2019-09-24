@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<style>
+    html{
+        visibility: hidden;
+    }
+</style>
+<html>
+<head>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<meta charset="ISO-8859-1">
+    <title>Tuition Reimbursement Form</title>
+    <style>
+
+    body {    
+        background-image: url("white.jpg");
+    }
+    .window {
+		background-image: url("red.jpg");
+	}
+    .container {
+        width: 400px;
+        clear: both;
+    }
+
+    .container input {
+        width: 100%;
+        clear: both;
+    }
+    .container label {
+    	margin-top: 20px;
+    }
+    .container button {
+      display: block;
+	  width: 100%;
+	  border: none;
+	  background-color:royalblue;
+	  padding: 14px 28px;
+	  font-size: 16px;
+	  cursor: pointer;
+	  text-align: center;
+    }
+    </style>
+
+</head>
+<body> 
+
+	<div style="margin-left: 10px; width: 900px;">
+		<h1 style="margin-top: 10px;">Tuition Reimbursement Portal</h1>
+		<p id="greeting" style="margin-left: 10px"></p>
+		<h4 style="margin-left: 10px;">Reimbursement Request Form</h4>
+		<div class="window" style="border:1px solid black; width: 400px; margin-left: 10px; margin-top: 5px;">
+			<div class="container">
+			    <label style="margin-top: 10px;">Event type:</label><br>
+			    <select id="e_type">
+			            <option value="course">University Course</option>
+			            <option value="seminar">Seminar</option>
+			            <option value="prep">Certification Preparation Class</option>
+			            <option value="cert">Certification</option>
+			            <option value="train">Technical Training</option>
+			            <option value="other">Other</option>
+			    </select><br>
+			    <label>Location: </label>
+			    <input id="location" type="text"><br>
+			    <label>Date: </label>
+			    <input id="date" type="datetime-local"><br>
+			    <label>Event Description: </label>
+			    <input id="description" type="text"><br>
+			    <label>Amount requested (Dollars): </label>
+			    <input id="cost" type="number"><br>
+			    <label>Grade format: </label><br>
+			    <select id="format">
+			            <option value="graded">Graded</option>
+			            <option value="not_graded">Not Graded</option>
+			    </select><br>
+			    <label>Work related justification / Additional information: </label>
+			    <textarea id="comment" type="text" style="width: 100%"></textarea><br>
+			    <button id="submitForm" onclick="submitForm()">Submit Request</button>
+			    <p id="response" style="margin-bottom: 10px;"></p>
+		</div>
+	</div>
+    
+
+
+
+
+    
+
+    
+</body>
+
+<script>
+        employee = "";
+        function initForm() {
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200) {
+                    employee = JSON.parse(this.responseText);
+                    if (employee == null) {
+                        window.location.href = "login.html";
+                    }
+                    else {
+          			  	document.getElementsByTagName("html")[0].style.visibility = "visible";
+                        document.getElementById("greeting").innerHTML = "Welcome, " + employee.firstname + " " + employee.lastname + "!";
+                    }
+                    
+                }
+            }
+            
+            xhttp.open("GET", "http://localhost:8080/Project1/initForm.do", true);
+            xhttp.send();
+        }
+        initForm();
+        function submitForm() {
+            let form = {
+                        emp_id: employee.id,
+                        event_date: document.getElementById("date").value,
+                        event_location: document.getElementById("location").value,
+                        event_description: document.getElementById("description").value,
+                        cost: document.getElementById("cost").value,
+                        grade_format: document.getElementById("format").value,
+                        event_type: document.getElementById("e_type").value,
+                        comments: document.getElementById("comment").value
+            }           
+            console.log(form);
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200) {
+                    document.getElementById("response").innerHTML = "Form submitted!";
+                }
+            }
+            xhttp.open("GET", "http://localhost:8080/Project1/addForm.do?emp_id="+form.emp_id+"&event_date="+form.event_date+"&event_location="+form.event_location+
+            					"&event_description="+form.event_description+"&cost="+form.cost+"&grade_format="+form.grade_format+"&event_type="+form.event_type+"&comments="+form.comments, true);
+            xhttp.send();
+        }
+        
+        </script>
+
+
+</html>

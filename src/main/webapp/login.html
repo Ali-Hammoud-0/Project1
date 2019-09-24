@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+	body {
+        background-image: url("white.jpg");
+    }
+	.window {
+		background-image: url("lblue.jpg");
+	}
+	.container {
+        width: 300px;
+        clear: both;
+    }
+
+    .container input {
+        width: 100%;
+        clear: both;
+    }
+    .container label {
+    	margin-top: 20px;
+    }
+    .container button {
+      display: block;
+	  width: 100%;
+	  border: none;
+	  background-color:royalblue;
+	  padding: 14px 28px;
+	  font-size: 16px;
+	  cursor: pointer;
+	  text-align: center;
+    }
+	</style>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<meta charset="ISO-8859-1">
+	<title>Tuition Reimbursement Form</title>
+</head>
+<body>
+	<div style="margin-left: 10px; width: 900px;">
+		<h1 style="margin-top: 10px;">Tuition Reimbursement Portal</h1>
+		<h4 style="margin-left: 10px;">Login</h4>
+		<div class="window" style="border:1px solid black; width: 300px; margin-left: 10px; margin-top: 5px;">
+			<div class="container">
+				<p id="result" style="color: red"></p>
+				<label style="margin-top: 0px;">Username:</label>
+				<input id="un" type="text"/>
+				<label>Password:</label>
+				<input id="pw" type="password"/>
+				<br>
+				<p></p>
+				<button onclick="getCreds()">Login</button>
+				<p id="load"> </p>
+			</div>
+		</div>
+	</div>
+	
+</body>
+
+<script>
+function getCreds() {
+    let un = document.getElementById("un").value;
+    let pw = document.getElementById("pw").value;
+	let xhttp = new XMLHttpRequest();
+	document.getElementById("load").innerHTML = "Loading...";
+    xhttp.onreadystatechange = function() {
+        if(this.readyState == 4 && this.status == 200) {
+			document.getElementById("load").innerHTML = " ";
+            let employee = JSON.parse(this.responseText);
+            if (employee == null) {
+                document.getElementById("result").innerHTML = "Invalid username.";
+            }
+            else {
+                if (pw != employee.password) {
+                    document.getElementById("result").innerHTML = "Invalid password.";
+                }
+                else {
+                    window.location.href = "form.html";
+                    
+                }
+            }
+        }
+    }
+    
+    xhttp.open("GET", "http://localhost:8080/Project1/getCredentials.do?id=" + un + "&pass=" + pw, true);
+    xhttp.send();
+}
+
+</script>
+
+</html>
